@@ -42,7 +42,7 @@ public class Principal {
                 consumidor.setAttachments("");
                 
                 /*DEFINE A CONEXÃO QUE É PARA USAR*/
-                CustomerDAO cliente = new CustomerDAO();
+                CloudscapeCustomerDAO cliente = new CloudscapeCustomerDAO();
                 
                 /*INSERE OS DADOS DE UM NOVO CLIENTE*/
                 cliente.insere(consumidor);
@@ -52,7 +52,7 @@ public class Principal {
             
             case 2:{
                 /*DEFINE A CONEXAO A SER UTILIZADA*/
-                CustomerDAO cliente = new CustomerDAO();
+                OracleCustomerDAO cliente = new OracleCustomerDAO();
                 
                 /*SELECIONA OS DADOS DE UM ALUNO*/
                 cliente.seleciona();
@@ -67,7 +67,7 @@ public class Principal {
                 cliente.setCompany("Microsoft do Bill Gates LTDA");
                 
                 /*DEFINE A CONEXÃO QUE DEVE UTILIZAR*/
-                CustomerDAO consumidor = new CustomerDAO();
+                SybaseCustomerDAO consumidor = new SybaseCustomerDAO();
                 
                 /*ATUALIZA OS DADOS DE UM CLIENTE*/
                 consumidor.altera(cliente);
