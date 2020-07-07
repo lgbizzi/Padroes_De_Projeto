@@ -1,24 +1,38 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package main;
 
 /**
  *
  * @author Luís Guilherme Ferreira Bizzi
  */
+// CloudscapeCustomerDAO implementation of the 
+// CustomerDAO interface. This class can contain all
+// Cloudscape specific code and SQL statements. 
+// The client is thus shielded from knowing 
+// these implementation details.
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
-public class CustomerDAO extends Customer{ 
-    /*FAZ A CONEXAO COM O BANCO DE DADOS*/
-    Connection conexao;
-    
-    public CustomerDAO(){
-        this.conexao = ConnectionFactory.getConnection();
-    }
-    
-    public void insere(Customer consumidor){
+public class CloudscapeCustomerDAO extends CustomerDAO{
+  
+  public CloudscapeCustomerDAO() {
+    this.conexao = CloudscapeDAOFactory.getConnection();
+  }
+
+  // The following methods can use
+  // CloudscapeDAOFactory.createConnection() 
+  // to get a connection as required
+
+  public int insertCustomer(Customer consumidor) {
+    // Implement insert customer here.
+    // Return newly created customer number
+    // or a -1 on error
+
         /*DEFINE A QUERY SQL*/
         String insere_consumidor;
         insere_consumidor = "INSERT INTO `customers` (`id`, `company`, `last_name`, `first_name`, `email_address`, `job_title`, `business_phone`, `home_phone`, `mobile_phone`, `fax_number`, `address`, `city`, `state_province`, `zip_postal_code`, `country_region`, `web_page`, `notes`, `attachments`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -50,35 +64,44 @@ public class CustomerDAO extends Customer{
             cliente.execute();
             cliente.close();
             
+            System.out.println("/nCliente criado com sucesso!");
             
         } catch (SQLException e){
             throw new RuntimeException(e);
         }
+        return consumidor.getId();
+  }
+  
+  public boolean deleteCustomer(Customer consumidor) {
+    // Implement delete customer here
+    // Return true on success, false on failure
+    String remove_cliente = "DELETE FROM Customer WHERE id=?";
         
-        
-    }
-    
-    public void seleciona() throws SQLException{
-	/*PREPARA A DECLARAÇÃO PARA O SELECT*/
-	PreparedStatement cliente = conexao.prepareStatement("SELECT * FROM Customer");
-		
-	/*EXECUTA UM SELECT
-		O ResultSet permito que a gente navegue pelos seus registros através do método next.
-		Esse método será nulo quando chegar no fim.
-	*/
-	ResultSet resultado = cliente.executeQuery();
-	
-	/*ITERA NO ResultSet UTILIZADO, PARA ENQUANTO O PRÓXIMO NÃO FOR NULO*/
-	while(resultado.next()){
-	}
-		
-	resultado.close();
-	cliente.close();
-	conexao.close();
-	}
-    
-    public void altera(Customer consumidor){
-        String altera_cliente;
+        try(PreparedStatement cliente = conexao.prepareStatement(remove_cliente)){
+            cliente.setLong(1, consumidor.getId());
+            
+            cliente.execute();
+            cliente.close();
+            return true;
+            
+        } catch (SQLException e){
+            return false;            
+        }    
+  }
+
+  /*public Customer findCustomer(...) {
+    // Implement find a customer here using supplied
+    // argument values as search criteria
+    // Return a Transfer Object if found,
+    // return null on error or if not found
+  }*/
+
+  public boolean updateCustomer(Customer consumidor) {
+    // implement update record here using data
+    // from the customerData Transfer Object
+    // Return true on success, false on failure or
+    // error
+    String altera_cliente;
         altera_cliente = "UPDATE Customer SET company=?, last_name=?, first_name=?, email_address=?, job_title=?, business_phone=?, home_phone=?, mobile_phone=?, fax_number=?, address=?, city=?, state_province=?, zip_postal_code=?, country_region=?,  web_page=?, notes=?, attachments=? WHERE id=?";
         
         try(PreparedStatement cliente = conexao.prepareStatement(altera_cliente)){
@@ -106,23 +129,33 @@ public class CustomerDAO extends Customer{
             /*EXECUTA A QUERY*/
             cliente.execute();
             cliente.close();
+            return true;
         } catch (SQLException e){
-            throw new RuntimeException(e);
-        }        
-    }
-    
-    public void remove(Customer consumidor){
-        String remove_cliente = "DELETE FROM Customer WHERE id=?";
-        
-        try(PreparedStatement cliente = conexao.prepareStatement(remove_cliente)){
-            cliente.setLong(1, consumidor.getId());
-            
-            cliente.execute();
-            cliente.close();
-            
-        } catch (SQLException e){
-            throw new RuntimeException(e);
+            return false;
         }
-    }    
     
+  }
+
+  public void selectCustomersTO() throws SQLException {
+    // implement search customers here using the
+    // supplied criteria.
+    // Alternatively, implement to return a Collection 
+    // of Transfer Objects.
+    /*PREPARA A DECLARAÇÃO PARA O SELECT*/
+	PreparedStatement cliente = conexao.prepareStatement("SELECT * FROM Customer");
+		
+	/*EXECUTA UM SELECT
+		O ResultSet permito que a gente navegue pelos seus registros através do método next.
+		Esse método será nulo quando chegar no fim.
+	*/
+	ResultSet resultado = cliente.executeQuery();
+	
+	/*ITERA NO ResultSet UTILIZADO, PARA ENQUANTO O PRÓXIMO NÃO FOR NULO*/
+	while(resultado.next()){
+	}
+		
+	resultado.close();
+	cliente.close();
+	conexao.close();
+    }
 }
