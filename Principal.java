@@ -14,7 +14,7 @@ public class Principal {
     
         Scanner op = new Scanner(System.in);
         int esc;
-        System.out.println("Digite o que quer fazer: 1 - Insert /n2 - Select /n3 - Update /n4 - Delete");
+        System.out.println("Digite o que quer fazer: 1 - Insert | 2 - Select | 3 - Update | 4 - Delete");
         esc = op.nextInt();
         
         switch(esc){
